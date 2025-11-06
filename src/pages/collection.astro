@@ -1,0 +1,95 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/header.astro';
+import Footer from '../components/footer.astro';
+import pb from '../utils/pb';
+
+// Déclaration des types pour les données des lunettes
+const LunetteType = {
+  id: 'string',
+  modele: 'string',
+  svg: 'string',
+  utilisateur: 'string',
+  created: 'string',
+};
+
+let lunettes = [];
+let error = null;
+
+try {
+  // Récupération de toutes les lunettes depuis PocketBase
+  const records = await pb.collection('lunettes').getFullList({
+    sort: '-created',
+  });
+  
+  lunettes = records;
+} catch (e) {
+  error = e instanceof Error ? e.message : 'Erreur lors du chargement des lunettes';
+  console.error('Erreur PocketBase:', e);
+}
+---
+
+<Layout>
+<Header />
+<body class="bg-background text-foreground min-h-screen p-8">
+  <div class="max-w-7xl mx-auto">
+    <h1 class="text-4xl font-bold mb-8 text-center">Collection de Lunettes</h1>
+    
+    {error && (
+      <div class="bg-destructive/10 border border-destructive text-destructive px-4 py-3 rounded-lg mb-6">
+        <p class="font-semibold">Erreur:</p>
+        <p>{error}</p>
+      </div>
+    )}
+    
+    {lunettes.length === 0 && !error && (
+      <div class="text-center text-muted-foreground py-12">
+        <p class="text-xl">Aucune lunette dans la collection pour le moment.</p>
+      </div>
+    )}
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {lunettes.map((lunette) => (
+        <div class="bg-card border border-border rounded-lg p-6 hover:shadow-lg transition-shadow">
+          <div class="mb-4">
+            <h2 class="text-xl font-semibold mb-2">
+              Modèle: {lunette.modele || 'N/A'}
+            </h2>
+            <p class="text-sm text-muted-foreground">ID: {lunette.id}</p>
+          </div>
+          
+          <div class="bg-muted rounded-lg p-4 flex items-center justify-center min-h-[200px]">
+            {lunette.svg && lunette.svg !== 'N/A' ? (
+              <div 
+                class="w-full h-full flex items-center justify-center"
+                set:html={lunette.svg}
+              />
+            ) : (
+              <p class="text-muted-foreground italic">Pas de SVG disponible</p>
+            )}
+          </div>
+          
+          <div class="mt-4 pt-4 border-t border-border">
+            <p class="text-xs text-muted-foreground">
+              Créé le: {new Date(lunette.created).toLocaleDateString('fr-FR')}
+            </p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <script>
+    // Script côté client pour interactions supplémentaires si nécessaire
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('Collection de lunettes chargée');
+      
+      // Vous pouvez ajouter des interactions ici, par exemple:
+      // - Filtrage des lunettes
+      // - Recherche
+      // - Zoom sur les SVG
+    });
+  </script>
+</body>
+<Footer />
+</Layout>

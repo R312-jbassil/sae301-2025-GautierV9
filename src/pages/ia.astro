@@ -1,0 +1,355 @@
+---
+import BaseLayout from "../layouts/Layout.astro";
+import pb from "../utils/pb.ts";
+
+export const prerender = false;
+
+// Auth obligatoire
+const user = Astro.locals.user;
+if (!user) {
+  throw Astro.redirect("/?redirect=/configurateur/ia");
+}
+
+// Id de la lunette (si on vient de "Mes lunettes")
+const id = Astro.url.searchParams.get("id");
+
+// Fallback serveur : si on a un id, on tente de charger le SVG côté serveur
+let initSvgServer = "";
+if (id) {
+  try {
+    const rec = await pb.collection("Lunette").getOne(id);
+    initSvgServer = rec?.cod_svg || "";
+  } catch (e) {
+    console.error("IA preload PB error:", e);
+  }
+}
+---
+
+
+<BaseLayout title="TaVue — IA" active="configurateur">
+  <main class="max-w-7xl mx-auto px-6 py-8">
+    <div class="mb-6">
+      <p class="uppercase tracking-widest text-xs opacity-60">Configuration IA</p>
+      <h1 class="text-3xl md:text-4xl font-extrabold">Chat avec l'Intelligence Artificielle</h1>
+      <p class="opacity-70 mt-1">
+        Décrivez ou modifiez vos lunettes avec l’aide de l’IA.
+        {id ? <span class="ml-1 opacity-80">(modification de <code>{id}</code>)</span> : null}
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <!-- Colonne gauche : Chat + Code brut -->
+      <section class="lg:col-span-7">
+        <div class="card bg-base-100 shadow-sm">
+          <div class="card-body">
+            <!-- Chat -->
+            <div id="chat" class="space-y-3 min-h-[360px] overflow-y-auto pr-1">
+              <div class="flex items-start gap-3">
+                <div class="avatar placeholder">
+                  <div class="bg-neutral text-neutral-content rounded-full w-8">IA</div>
+                </div>
+                <div class="bg-base-200 rounded-2xl px-3 py-2 text-sm max-w-[85%]">
+                  Bonjour ! Décrivez-moi les lunettes que vous souhaitez créer ou modifiez celles chargées.
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-4 flex gap-2">
+              <textarea id="prompt" class="textarea textarea-bordered flex-1 resize-none" rows="2"
+                placeholder="Ex : monture légère en acétate, branches métal, couleur écaille..."></textarea>
+              <button id="send" type="button" class="btn btn-neutral shrink-0 flex items-center gap-2">
+                <svg id="spin-main" class="w-4 h-4 hidden animate-spin" viewBox="0 0 24 24" fill="none">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4A4 4 0 008 12H4z"/>
+                </svg>
+                <span>Lancer l’IA</span>
+              </button>
+            </div>
+
+            <!-- Code SVG brut (non exécuté) -->
+            <div class="mt-6">
+              <h3 class="font-semibold mb-2 text-sm opacity-80">Code SVG généré (texte)</h3>
+              <pre id="svg-code" class="bg-base-200 rounded-xl p-3 text-xs overflow-auto max-h-56 select-all">
+Aucun code pour l’instant.
+              </pre>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Colonne droite : Aperçu SVG + édition + actions -->
+      <section class="lg:col-span-5">
+        <div class="card bg-base-100 shadow-sm">
+          <div class="card-body">
+            <h3 class="card-title text-base">Aperçu SVG</h3>
+            <div
+              id="preview"
+              class="rounded-xl bg-base-200/70 flex items-center justify-center min-h-[360px] p-4 text-sm opacity-70"
+            >
+              Aucun SVG généré
+            </div>
+
+            <!-- Édition avec l’IA -->
+            <div class="mt-4">
+              <div class="flex items-center justify-between">
+                <label for="edit-instr" class="label-text font-medium">Éditer avec l’IA</label>
+                <small class="opacity-60">Modifie le SVG actuel via une instruction</small>
+              </div>
+              <div class="flex gap-2 mt-2">
+                <input id="edit-instr" type="text" class="input input-bordered w-full"
+                  placeholder="Ex : Passe la monture en noir et augmente les verres à 52mm" />
+                <button id="btn-edit-ai" type="button" class="btn btn-ghost border flex items-center gap-2">
+                  <svg id="spin-edit" class="w-4 h-4 hidden animate-spin" viewBox="0 0 24 24" fill="none">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4A4 4 0 008 12H4z"/>
+                  </svg>
+                  <span>Appliquer</span>
+                </button>
+              </div>
+
+              <!-- Zone d’édition du code SVG -->
+              <div class="mt-2">
+                <textarea id="edit-source" class="textarea textarea-bordered w-full font-mono text-xs"
+                  rows="8" placeholder="Le SVG à éditer apparaîtra ici"></textarea>
+                <small class="opacity-60">
+                  Tu peux modifier manuellement le code SVG ici — l’IA partira de ce contenu.
+                </small>
+              </div>
+            </div>
+
+            <!-- Boutons -->
+            <div class="mt-4 flex gap-3">
+              <button id="btn-save" type="button" class="btn btn-primary" disabled>Sauvegarder</button>
+              <a class="btn" href="/configurateur">Aller dans le configurateur</a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script is:inline>
+    const chatEl = document.getElementById('chat');
+    const promptEl = document.getElementById('prompt');
+    const sendBtn = document.getElementById('send');
+    const spinMain = document.getElementById('spin-main');
+
+    const preview = document.getElementById('preview');
+    const saveBtn = document.getElementById('btn-save');
+    const codeEl = document.getElementById('svg-code');
+    const editInput = document.getElementById('edit-instr');
+    const editBtn = document.getElementById('btn-edit-ai');
+    const spinEdit = document.getElementById('spin-edit');
+    const editSource = document.getElementById('edit-source');
+
+    const messages = [
+      { role: "assistant", content: "Bonjour ! Décrivez-moi les lunettes que vous souhaitez créer." }
+    ];
+
+    // Helpers
+    const escapeHtml = (s) => String(s || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    function addBubble(role, content) {
+      const wrap = document.createElement('div');
+      wrap.className = 'flex items-start gap-3 ' + (role === 'user' ? 'justify-end' : '');
+      const bubble = document.createElement('div');
+      bubble.className = 'rounded-2xl px-3 py-2 text-sm max-w-[85%] ' +
+        (role === 'user' ? 'bg-neutral text-neutral-content' : 'bg-base-200');
+      bubble.textContent = content;
+      if (role === 'user') {
+        wrap.appendChild(bubble);
+      } else {
+        const av = document.createElement('div');
+        av.className = 'avatar placeholder';
+        av.innerHTML = '<div class="bg-neutral text-neutral-content rounded-full w-8">IA</div>';
+        wrap.appendChild(av);
+        wrap.appendChild(bubble);
+      }
+      chatEl.appendChild(wrap);
+      chatEl.scrollTop = chatEl.scrollHeight;
+    }
+
+    async function callGenerate(body) {
+      console.log("[v0] Calling /api/generate-svg with body:", body);
+      
+      try {
+        const res = await fetch('/api/generate-svg', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
+        
+        console.log("[v0] Response status:", res.status);
+        
+        let data;
+        try { 
+          data = await res.json(); 
+          console.log("[v0] Response data:", data);
+        }
+        catch (e) { 
+          console.error("[v0] Failed to parse JSON:", e);
+          data = { success:false, error:'Réponse invalide du serveur' }; 
+        }
+        
+        if (!res.ok || !data?.success) {
+          throw new Error(data?.error || `HTTP ${res.status}`);
+        }
+        return data;
+      } catch (error) {
+        console.error("[v0] callGenerate error:", error);
+        throw error;
+      }
+    }
+
+    function applyResult(data) {
+      messages.push({ role: 'assistant', content: data.fullResponse || '' });
+      addBubble('assistant', 'Proposition générée. Aperçu à droite et code ci-dessous.');
+
+      if (data.svg) {
+        preview.classList.remove('opacity-70');
+        preview.innerHTML = data.svg;
+        preview.dataset.svg = data.svg;
+        editSource.value = data.svg;
+        saveBtn.disabled = false;
+      } else {
+        preview.innerHTML = '<span class="opacity-60">La réponse ne contenait pas de SVG valide.</span>';
+        saveBtn.disabled = true;
+      }
+
+      const codeText = data.svg || (data.fullResponse || '');
+      codeEl.innerHTML = codeText ? escapeHtml(codeText) : "Aucun code pour l’instant.";
+    }
+
+    // 1) Charger le SVG depuis Mes lunettes via sessionStorage
+    try {
+      const initSvg = sessionStorage.getItem("ia_init_svg");
+      if (initSvg) {
+        preview.classList.remove('opacity-70');
+        preview.innerHTML = initSvg;
+        preview.dataset.svg = initSvg;
+        editSource.value = initSvg;
+        saveBtn.disabled = false;
+        codeEl.innerHTML = escapeHtml(initSvg);
+        sessionStorage.removeItem("ia_init_svg");
+      }
+    } catch (e) {
+      console.warn("Impossible de lire ia_init_svg:", e);
+    }
+
+    // 2) Fallback serveur : si aucun SVG chargé et un id est présent
+    (function serverFallback(){
+      if (preview.dataset.svg) return;
+      const FROM_SERVER = (typeof initSvgServer !== "undefined" && initSvgServer) ? String(initSvgServer) : "";
+      if (FROM_SERVER) {
+        preview.classList.remove('opacity-70');
+        preview.innerHTML = FROM_SERVER;
+        preview.dataset.svg = FROM_SERVER;
+        editSource.value = FROM_SERVER;
+        saveBtn.disabled = false;
+        codeEl.innerHTML = escapeHtml(FROM_SERVER);
+      }
+    })();
+
+    // Génération IA depuis un prompt libre
+    sendBtn.addEventListener('click', async () => {
+      let text = promptEl.value.trim();
+      if (!text) {
+        // on utilise un prompt par défaut pour éviter l’impression de "rien ne se passe"
+        text = "Génère un SVG de lunettes modernes prêt à être affiché (une seule balise <svg>), monture sobre.";
+      }
+      promptEl.value = '';
+      addBubble('user', text);
+      messages.push({ role: 'user', content: text });
+
+      sendBtn.disabled = true;
+      spinMain.classList.remove('hidden');
+
+      try {
+        // on peut envoyer le svg courant comme contexte si présent
+        const current = editSource.value.trim();
+        const data = await callGenerate(current ? { prompt: text, baseSvg: current } : { prompt: text });
+        applyResult(data);
+      } catch (err) {
+        console.error(err);
+        addBubble('assistant', "Erreur IA : " + err.message);
+      } finally {
+        sendBtn.disabled = false;
+        spinMain.classList.add('hidden');
+      }
+    });
+
+    // Éditer le SVG courant via instruction
+    editBtn.addEventListener('click', async () => {
+      const instr = editInput.value.trim();
+      const currentSvg = editSource.value.trim();
+      if (!instr) return alert("Écris une instruction d’édition.");
+      if (!currentSvg) return alert("Aucun SVG à éditer.");
+
+      const editPrompt =
+        "Here is the current SVG to modify:\n" +
+        currentSvg +
+        "\n\nInstruction: " + instr +
+        "\nReturn only a single valid <svg>...</svg> (no markdown).";
+
+      addBubble('user', "Édite : " + instr);
+      messages.push({ role: 'user', content: editPrompt });
+
+      editBtn.disabled = true;
+      spinEdit.classList.remove('hidden');
+
+      try {
+        const data = await callGenerate({ messages: messages });
+        applyResult(data);
+      } catch (err) {
+        console.error(err);
+        addBubble('assistant', "Impossible de modifier le SVG (" + err.message + ").");
+      } finally {
+        editBtn.disabled = false;
+        spinEdit.classList.add('hidden');
+      }
+    });
+
+    // Sauvegarde : UPDATE si id présent, sinon CREATE
+    saveBtn.addEventListener('click', async () => {
+      const svg = preview.dataset.svg;
+      if (!svg) return;
+
+      saveBtn.disabled = true;
+      saveBtn.textContent = 'Sauvegarde...';
+
+      const currentId = new URLSearchParams(location.search).get("id") || null;
+
+      try {
+        let endpoint, body;
+        if (currentId) {
+          // ➜ EDIT de la lunette existante
+          endpoint = '/api/lunettes/update';
+          body = { id: currentId, cod_svg: svg, name: 'SVG IA ' + new Date().toLocaleString() };
+        } else {
+          // ➜ CRÉATION d'une nouvelle
+          endpoint = '/api/save-svg';
+          body = { name: 'SVG IA ' + new Date().toLocaleString(), cod_svg: svg, chat_history: messages };
+        }
+
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify(body)
+        });
+
+        const out = await res.json().catch(() => ({}));
+        if (!res.ok || out.error || out.success === false) {
+          throw new Error(out.error || 'Save failed');
+        }
+
+        alert(currentId ? 'Modifié ✅' : 'Créé ✅');
+        saveBtn.textContent = 'Sauvegardé ✓';
+      } catch (e) {
+        console.error(e);
+        alert('Échec de la sauvegarde.');
+        saveBtn.disabled = false;
+        saveBtn.textContent = 'Sauvegarder';
+      }
+    });
+  </script>
+</BaseLayout>

@@ -1,0 +1,264 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Footer from '../components/footer.astro';
+import Header from '../components/header.astro';
+---
+
+<Layout>
+ <Header />
+  <div class="pb-15 min-h-screen flex flex-col items-center bg-white">
+    <div class="w-full max-w-4xl mx-auto pt-10 pb-4 flex flex-col items-center">
+      <h1 class="text-4xl font-serif font-medium text-gray-900 mb-2 text-center">
+        Créez vos lunettes sur mesure
+      </h1>
+      <p class="text-gray-500 text-center max-w-lg mb-8">
+        Personnalisez chaque détail de votre paire de lunettes. Matériaux nobles, fabrication artisanale française, design raffiné.<br />
+        Une création unique qui vous ressemble.
+      </p>
+    </div>
+    <div class="flex flex-col lg:flex-row gap-12 w-full max-w-6xl mx-auto">
+      <div class="flex flex-1 items-center justify-center bg-[#E5E5E5] rounded-xl border border-black p-6 min-h-[360px]">
+        <svg id="svg-lunette" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 595.28 841.89">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #706f6f;
+        mix-blend-mode: multiply;
+      }
+
+      .cls-2 {
+        isolation: isolate;
+      }
+
+      .cls-3, .cls-4 {
+        fill: #ffffff;
+      }
+
+      .cls-4, .cls-3 {
+        stroke: #1d1d1b;
+        stroke-miterlimit: 10;
+        stroke-width: .5px;
+      }
+
+      .cls-5 {
+        fill: none;
+        opacity: .75;
+      }
+    </style>
+  </defs>
+  <g class="cls-2">
+    <g id="branches">
+      <path class="cls-4" d="M108.83,155.14s49.35-5.57,54.93-8.76,11.14-7.96,19.5-9.55,64.48-11.14,64.48-11.14c0,0,7.16-1.99,17.51,5.57s33.04,31.84,39.4,31.05c6.37-.8,9.55-9.55,7.56-13.53s-40.67-32.75-47.36-34.63c-9.53-2.68-21.89-2.39-37.02,0-15.12,2.39-116.22,23.34-116.22,23.34,0,0-13.13,6.12-2.79,17.66Z"/>
+      <path class="cls-1" d="M308.24,150.76s-.31,6.15-3.98,5.57c-4.97-.78-35.82-33.83-46.17-32.24,0,0,8.53,2.71,18.46,11.64,6.51,5.86,34.42,37.85,31.69,15.03Z"/>
+      <path class="cls-4" d="M374.79,179.65l90.54-29.78s22.13-5.63,25.35-4.02,17.71,30.58,17.71,33.8-2.42,14.01-5.63,14.89c-2.33.64-5.33.11-6.84-4.21-1.41-4.02-6.84-31.73-12.47-31.47s-50.7,15.95-50.7,15.95c0,0-13.28,6.44-18.91,11.27s-32.19,11.27-32.19,11.27c0,0-9.66-7.65-6.84-17.71Z"/>
+      <path class="cls-1" d="M381.34,180.1s102.27-35.19,107.85-31.99c0,0-18.2,2.49-41.76,11.88s-66.09,22.03-66.09,22.03v-1.92Z"/>
+      <path class="cls-1" d="M485.36,158.06s3.26,0,4.98,3.45,9.77,24.71,9.77,24.71c0,0,.77,4.98,5.17-2.68,0,0-3.07,9.56-5.36,6.79s-9.77-26.33-9.77-26.33c0,0-2.87-6.74-4.79-5.94Z"/>
+    </g>
+    <g id="monture">
+      <path class="cls-3" d="M385.31,180.81c-.24-3.41-9.57-5.22-12.71-6.4-3.14-1.18-15.7,1.96-15.7,1.96-12.17-3.14-54.55-9.03-78.88-9.03s-32.57,11.38-35.32,10.99c-2.75-.39-17.27-.78-23.55-1.96-6.28-1.18-5.1-14.13-39.25-26.48-34.14-12.35-68.29-12.42-68.29-12.42-13.35,4.66-6.76,18.49-6.76,18.49l2.05,6.35c4.32,2.03,3.14,10.52,4.71,23.08s7.46,28.65,14.13,38.46c6.67,9.81,31.79,20.8,44.35,21.19s23.55-1.96,31.79-15.31c8.24-13.34,16.88-36.89,16.88-36.89l10.2,1.57s2.91.31,5.35,3.09,4.43,8.03,7.6,17.31c7.56,22.1,25.12,39.25,25.12,39.25,0,0,5.6,7.43,33.44,12.66,23.08,4.34,42.7-2.46,42.7-2.46,17.72-7.17,21.63-44.96,21.63-44.96,0,0,1.83-13.3,7.81-16.65,7.37-4.14,8.27-4.44,12.71-5.32,3.61-.71.24-13.13,0-16.54ZM190.5,231.32c-9.42,5.1-32.18,7.06-46.31-3.92-14.13-10.99-20.8-30.22-22.76-52.98s7.1-25.23,7.1-25.23c0,0,14.88-.67,34.11,4.03,19.23,4.71,40.42,18.05,40.82,26.69.39,8.63-3.53,46.31-12.95,51.41ZM344.73,255.65c-9.03,4.32-21.47,4.71-31.93,3.92-10.46-.78-37.54-1.57-47.35-31.4,0,0-2.75-14.13-5.1-17.27-2.35-3.14-9.42-14.48-9.42-18.43,0-8.23,7.15-12.97,7.15-12.97,0,0,8.16-5.1,18.75-5.1,10.6,0,64.75,2.75,72.21,12.95,7.46,10.2,7.06,21.98,8.24,31.4,1.18,9.42-3.53,32.57-12.56,36.89Z"/>
+    </g>
+    <g id="verres">
+      <path class="cls-5" d="M116.32,162.87c-.88,6.05.4,37.41,11.44,55.31s37.04,21.35,41.37,21.31,18.51,1.02,24.47-9.27c4.97-8.59,13.17-43.48,9.12-53.05-6.26-14.82-40.4-24.02-40.4-24.02,0,0-26.85-5.46-33.82-4.46,0,0-9.97-.96-12.17,14.17Z"/>
+      <path class="cls-5" d="M247.32,192.54s-1.09-9.55,19.57-16.69c11.76-4.06,60.46,3.23,60.46,3.23,0,0,19.09,4.06,21.71,8.28,2.62,4.22,9.46,17.24,8.29,37.97-1.14,20.21-7.31,26.8-12.61,30.31,0,0-7.1,4.93-21.34,5.93-26.65,1.88-37.01-1.14-46.19-7.73-29.88-21.46-29.88-61.3-29.88-61.3Z"/>
+    </g>
+  </g>
+</svg>
+      </div>
+      <aside class="w-full lg:h-[580px] lg:w-[440px] flex flex-col gap-8 bg-white rounded-xl border border-gray-200 p-8 shadow-md">
+        <section>
+          <h2 class="mb-2 text-base font-semibold text-gray-800">1. Matériau de la monture</h2>
+          <div class="grid grid-cols-2 gap-3">
+            <button class="btn-monture btn border bg-white text-black border-black rounded-md py-3 font-medium hover:bg-[#1E2A4A] hover:text-white transition btn-monture">Acétate</button>
+            <button class="btn-monture btn border bg-white text-black border-black rounded-md py-3 font-medium hover:bg-[#1E2A4A] hover:text-white transition btn-monture">Métal</button>
+            <button class="btn-monture btn border bg-white text-black border-black rounded-md py-3 font-medium hover:bg-[#1E2A4A] hover:text-white transition btn-monture">Fibre de carbone</button>
+            <button class="btn-monture btn border bg-white text-black border-black rounded-md py-3 font-medium hover:bg-[#1E2A4A] hover:text-white transition btn-monture">Bois</button>
+          </div>
+        </section>
+        <section>
+          <h2 class="mb-2 text-base font-semibold text-gray-800">2. Matériau des branches</h2>
+          <div class="grid grid-cols-2 gap-3">
+            <button class="btn-branche btn border bg-white text-black border-black rounded-md py-3 font-medium hover:bg-[#1E2A4A] hover:text-white transition btn-branche">Acétate</button>
+            <button class="btn-branche btn border bg-white text-black border-black rounded-md py-3 font-medium hover:bg-[#1E2A4A] hover:text-white transition btn-branche">Métal</button>
+            <button class="btn-branche btn border bg-white text-black border-black rounded-md py-3 font-medium hover:bg-[#1E2A4A] hover:text-white transition btn-branche">Fibre de carbone</button>
+            <button class="btn-branche btn border bg-white text-black border-black rounded-md py-3 font-medium hover:bg-[#1E2A4A] hover:text-white transition btn-branche">Bois</button>
+          </div>
+        </section>
+		<section>
+  <h2 class="mb-2 text-base font-semibold text-gray-800">3. Largeur du pont</h2>
+  <div class="grid grid-cols-3 gap-3">
+    <button class="btn-largeur btn border bg-white text-black border-black rounded-md py-3 font-medium hover:bg-[#1E2A4A] hover:text-white transition">14mm</button>
+    <button class="btn-largeur btn border bg-white text-black border-black rounded-md py-3 font-medium hover:bg-[#1E2A4A] hover:text-white transition">18mm</button>
+    <button class="btn-largeur btn border bg-white text-black border-black rounded-md py-3 font-medium hover:bg-[#1E2A4A] hover:text-white transition">22mm</button>
+  </div>
+</section>
+		<section>
+  <h2 class="mb-2 text-base font-semibold text-gray-800">4. Taille des verres</h2>
+  <div class="grid grid-cols-3 gap-3">
+    <button class="btn-verre btn border bg-white text-black border-black rounded-md py-3 font-medium hover:bg-[#1E2A4A] hover:text-white transition">45mm</button>
+    <button class="btn-verre btn border bg-white text-black border-black rounded-md py-3 font-medium hover:bg-[#1E2A4A] hover:text-white transition">50mm</button>
+    <button class="btn-verre btn border bg-white text-black border-black rounded-md py-3 font-medium hover:bg-[#1E2A4A] hover:text-white transition">55mm</button>
+  </div>
+</section>
+      </aside>
+    </div>
+  </div>
+  <div class="pb-15 flex gap-50 justify-center flex-wrap bg-white">
+  <div class="bg-gray-100 border-2 border-indigo-900 rounded-lg p-6 max-w-xs min-w-[440px] flex flex-col">
+    <div class="flex justify-between items-start">
+      <span class="text-gray-500 text-base">D'autres lunettes</span>
+    </div>
+    <button class="flex items-center justify-center gap-2 w-full bg-indigo-900 text-white rounded-md py-3 mt-6 mb-2 font-serif text-base font-normal">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" class="mr-1">
+        <rect x="7" y="3" width="10" height="7" rx="2" />
+        <rect x="5" y="10" width="14" height="11" rx="2" />
+        <circle cx="12" cy="16" r="1.6" />
+      </svg>
+      générer avec l'ia
+    </button>
+  </div>
+  <div class="bg-gray-100 border-2 border-indigo-900 rounded-lg p-6 max-w-xs min-w-[440px] flex flex-col">
+    <div class="flex justify-between items-start">
+      <span class="text-gray-500 text-base">Prix total</span>
+      <span class="font-serif text-3xl font-normal text-black">149€</span>
+    </div>
+    <button id="btn-save-glasses" class="flex items-center justify-center gap-2 w-full bg-indigo-900 text-white rounded-md py-3 mt-6 mb-2 font-serif text-base font-normal">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M10.1333 2C10.485 2.00501 10.8205 2.14878 11.0667 2.4L13.6 4.93333C13.8512 5.17951 13.995 5.51497 14 5.86667V12.6667C14 13.0203 13.8595 13.3594 13.6095 13.6095C13.3594 13.8595 13.0203 14 12.6667 14H3.33333C2.97971 14 2.64057 13.8595 2.39052 13.6095C2.14048 13.3594 2 13.0203 2 12.6667V3.33333C2 2.97971 2.14048 2.64057 2.39052 2.39052C2.64057 2.14048 2.97971 2 3.33333 2H10.1333Z" stroke="white" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M11.3334 14V9.33335C11.3334 9.15654 11.2632 8.98697 11.1382 8.86195C11.0131 8.73693 10.8436 8.66669 10.6667 8.66669H5.33341C5.1566 8.66669 4.98703 8.73693 4.86201 8.86195C4.73699 8.98697 4.66675 9.15654 4.66675 9.33335V14" stroke="white" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M4.66675 2V4.66667C4.66675 4.84348 4.73699 5.01305 4.86201 5.13807C4.98703 5.2631 5.1566 5.33333 5.33341 5.33333H10.0001" stroke="white" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+
+      Sauvegarder ma création
+    </button>
+    <div class="mt-2 text-center text-sm text-gray-400">
+      Livraison gratuite • Garantie 2 ans • Retour sous 30 jours
+    </div>
+  </div>
+</div>
+<style>
+    .btn.active {
+  position: relative;
+  background-color: #1E2A4A;
+  color: white;
+  border-color: #1E2A4A;
+}
+
+.btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 3px;
+  background-color: #1E2A4A;
+  border-radius: 2px;
+}
+</style>
+<script>
+  import pb from '../utils/pb';
+
+const materiauIds = {
+  "Acétate": "dpunugzw3sb0t8w",
+  "Métal": "z5owmvfv0zixuvf",
+  "Fibre de carbone": "9gm1dkh13p1wj6d",
+  "Bois": "lzbkr0uof7jzocn"
+};
+
+const couleursMateriau = {
+  'Acétate': '#A7E3EA',
+  'Métal': '#767C87',
+  'Fibre de carbone': '#3B3B3B',
+  'Bois': '#BD8B5D'
+};
+
+let materiauMonture = null;
+let materiauBranche = null;
+let largeurPont = null;
+let tailleVerre = null;
+
+// Fonction: couleur DOM et SVG export
+function changerCouleurClasse(classe, couleur) {
+  // Cible <svg id="svg-lunette"> uniquement
+  const svg = document.getElementById('svg-lunette');
+  if (!svg) return;
+  svg.querySelectorAll(`.${classe}`).forEach(el => {
+    el.style.fill = couleur;
+    el.setAttribute('fill', couleur);
+  });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.btn-monture').forEach(btn => {
+    btn.addEventListener('click', () => {
+      materiauMonture = materiauIds[btn.textContent.trim()];
+      changerCouleurClasse('cls-3', couleursMateriau[btn.textContent.trim()]);
+      document.querySelectorAll('.btn-monture').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+
+  document.querySelectorAll('.btn-branche').forEach(btn => {
+    btn.addEventListener('click', () => {
+      materiauBranche = materiauIds[btn.textContent.trim()];
+      changerCouleurClasse('cls-4', couleursMateriau[btn.textContent.trim()]);
+      document.querySelectorAll('.btn-branche').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+
+  document.querySelectorAll('.btn-largeur').forEach(btn => {
+    btn.addEventListener('click', () => {
+      largeurPont = parseInt(btn.textContent);
+      document.querySelectorAll('.btn-largeur').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+
+  document.querySelectorAll('.btn-verre').forEach(btn => {
+    btn.addEventListener('click', () => {
+      tailleVerre = parseInt(btn.textContent);
+      document.querySelectorAll('.btn-verre').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+
+  document.getElementById("btn-save-glasses").addEventListener("click", async () => {
+    const svgElement = document.getElementById('svg-lunette');
+    // Vérification existence
+    if (!svgElement) {
+      alert("SVG non trouvé sur la page !");
+      return;
+    }
+    const svgCode = svgElement.outerHTML;
+    const currentUserId = pb.authStore.model?.id;
+
+    if (!materiauMonture || !materiauBranche || !largeurPont || !tailleVerre) {
+      alert('Merci de sélectionner tous les critères 🙏');
+      return;
+    }
+    if (!currentUserId) {
+      alert('Erreur: utilisateur non connecté.');
+      return;
+    }
+
+    try {
+      await pb.collection('lunettes').create({
+        Utilisateur: currentUserId,
+        Modele: "basique",
+        SVG: svgCode,
+        largeur_pont: largeurPont,
+        taille_verre: tailleVerre,
+        Materiaux_Monture: materiauMonture,
+        Materiaux_Branches: materiauBranche
+      });
+
+      alert('Votre création a bien été enregistrée !');
+    } catch (err) {
+      alert('Erreur lors de l\'enregistrement: ' + err.message);
+    }
+  });
+});
+</script>
+  <Footer />
+</Layout>
