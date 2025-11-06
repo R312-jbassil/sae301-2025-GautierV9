@@ -1,24 +1,8 @@
-import PocketBase from "pocketbase";
-
-const baseUrl = (import.meta as any).env?.PUBLIC_PB_URL ?? "http://127.0.0.1:8090";
-
-const pb = new PocketBase(baseUrl);
-
-export function loadAuthFromCookie(cookieHeader: string) {
-  if (cookieHeader) {
-    pb.authStore.loadFromCookie(cookieHeader, "pb_auth");
-  }
-}
-
-export function exportAuthCookieValue() {
-  const header = pb.authStore.exportToCookie({
-    httpOnly: true,
-    secure: (import.meta as any).env?.PROD ?? false,
-    sameSite: "Strict",
-    path: "/",
-  });
-  const m = header.match(/pb_auth=([^;]+)/);
-  return m ? m[1] : "";
-}
-
+import PocketBase from 'pocketbase';
+import type { TypedPocketBase } from "./pocketbase-types";
+var path='';
+if(import.meta.env.MODE === 'development')
+    path = 'http://localhost:8090'    //localhost = machine de dev
+else path = 'https://sae301.gautiervicat.fr:443'   //url du site 
+const pb = new PocketBase(path) as TypedPocketBase;
 export default pb;
